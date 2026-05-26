@@ -1,0 +1,16 @@
+ESTRUTURA DE RESPOSTAS - QUESTÃO 01
+
+a) Propósito de ENV DEBIAN_FRONTEND=noninteractive:
+Define que as instalações de pacotes (via apt-get) ocorrerão de forma automatizada e sem interrupções por parte de interfaces de escolha do usuário (como fusos horários ou idiomas). Se omitida, o processo de build do Docker falharia ou ficaria travado aguardando uma interação humana que não é possível durante a compilação da imagem.
+
+b) Diferença entre RUN e CMD:
+A instrução RUN é executada durante o momento de build (construção) da imagem, adicionando novas camadas persistentes ao sistema de arquivos (ex: instalando o Apache e PHP). A instrução CMD define o comando padrão executado apenas quando o container entra em seu ciclo de vida ativo (runtime), não alterando a imagem.
+
+c) Papel do usuário www-data e o comando chown:
+No ecossistema Ubuntu/Debian, o 'www-data' é o usuário padrão utilizado pelo servidor web Apache para manipular arquivos e executar processos HTTP em segundo plano de forma segura. A alteração com 'chown -R' é indispensável para que o Apache possua os privilégios necessários de leitura, escrita e modificação sobre os arquivos do WordPress, permitindo upload de mídias e atualizações.
+
+d) Significado de ["/usr/sbin/apache2", "-D", "FOREGROUND"]:
+O parâmetro '-D FOREGROUND' força o servidor Apache a rodar em primeiro plano anexado ao console. Como o Docker monitora o status do container baseado no ciclo de vida do seu processo principal (PID 1), rodar em background faria com que o processo inicial terminasse e o motor do Docker encerrasse o container imediatamente por achar que sua tarefa foi concluída.
+
+e) Finalidade do VOLUME ["/var/www/html/wp-content"]:
+O diretório 'wp-content' armazena todo o estado dinâmico e personalizado da aplicação WordPress (temas, plugins e uploads de mídia). Como os containers são voláteis por padrão (stateless), mapear essa pasta como um volume gerenciado garante a persistência dos dados de forma isolada do ciclo de vida do container, prevenindo a perda de dados em deleções ou atualizações de infraestrutura.
